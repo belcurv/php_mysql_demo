@@ -1,0 +1,4 @@
+[30-Mar-2017 23:18:27 America/Chicago] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /home/belcurvc/public_html/jqphp/ajax/inventory.php on line 19
+[30-Mar-2017 23:18:27 America/Chicago] PHP Warning:  mysql_result() expects parameter 1 to be resource, boolean given in /home/belcurvc/public_html/jqphp/ajax/inventory.php on line 19
+[30-Mar-2017 23:18:30 America/Chicago] PHP Warning:  mysql_num_rows() expects parameter 1 to be resource, boolean given in /home/belcurvc/public_html/jqphp/ajax/inventory.php on line 19
+[30-Mar-2017 23:18:30 America/Chicago] PHP Warning:  mysql_result() expects parameter 1 to be resource, boolean given in /home/belcurvc/public_html/jqphp/ajax/inventory.php on line 19
