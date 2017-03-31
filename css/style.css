@@ -1,0 +1,18 @@
+body {
+    font-family: sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    border-bottom: 2px solid #333;
+}
+
+th,
+td {
+    padding: .5em;
+}

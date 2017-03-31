@@ -1,5 +1,5 @@
 /* jshint esversion:6 */
-/* globals jQuery */
+/* globals jQuery, document, console */
 
 (function ($) {
     
@@ -12,6 +12,9 @@
     function cacheDom() {
         DOM.$form   = $('#input-form');
         DOM.$output = $('#part-number-data');
+        DOM.$table  = $(document.createElement('table'));
+        DOM.$thead  = $(document.createElement('thead'));
+        DOM.$tbody  = $(document.createElement('tbody'));
     }
     
     
@@ -29,15 +32,13 @@
         // capture input value
         var pn = e.target[0].value.trim();
         
-        // POST 'pn' to our php file
-        
-        // if value is not empty...
-        if (pn !== '') {
+        // if value greater than 2 characters
+        if (pn.length > 2) {
             // ...send it to our ajax php file
             // 1st arg = the url of our 'server'
             // 2nd arg = object mapping the db key : captured input var
-            // 3rd arg = callback that takes data returned from our server
-            $.post('ajax/inventory.php', { part_number : pn }, render);
+            $.post('ajax/inventory.php', { part_number : pn })
+                .then(render);
         }
         
         e.stopPropagation();
@@ -46,7 +47,61 @@
     
     // render
     function render(data) {
-        DOM.$output.text(data);
+        
+        var res = JSON.parse(data);
+        
+        console.log(res);
+        console.log(typeof res);
+        
+        // empty output element first
+        DOM.$output.empty();
+        
+        // if the response is truthy...
+        if (res.length) {
+            
+            DOM.$thead
+                .html(`<tr>
+                        <th>Part Number</th>
+                        <th>NSN / Alt</th>
+                        <th>Description</th>
+                        <th>Condition</th>
+                        <th>Qty</th>
+                        <th>UOM</th>
+                       <tr>`
+                     );
+            
+            DOM.$tbody
+                .empty();
+            
+            res.forEach(function (part) {
+                
+                var $tr = $(document.createElement('tr'));
+                
+                $tr.html(`<td>${part.part_number}</td>
+                           <td>${part.nsn_alt}</td>
+                           <td>${part.description}</td>
+                           <td>${part.cond}</td>
+                           <td>${part.qty}</td>
+                           <td>${part.uom}</td>`
+                         )
+                    .appendTo(DOM.$tbody);
+            });
+            
+            DOM.$table
+                .addClass('part-number-table')
+                .append(DOM.$thead)
+                .append(DOM.$tbody)
+                .appendTo(DOM.$output);
+            
+            
+        } else {
+            
+            // ...otherwise
+            DOM.$output
+                .text('Part number not found.');
+            
+        }        
+        
     }
     
     

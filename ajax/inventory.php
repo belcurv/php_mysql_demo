@@ -1,20 +1,38 @@
 <?php
 
-/* some checks before we actually query the database */
-
-// need data to be set and not be empty
-if (isset($_POST['part_number']) === true && empty($_POST['part_number']) === false) {
+/* preflight checks before query db
+   Need to make sure data exists, is not empty,
+   and is greater than 2 UTF8 characters
+*/
+if (isset($_POST['part_number']) === true &&
+    empty($_POST['part_number']) === false &&
+    mb_strlen($_POST['part_number'], 'utf8') > 2) {
     
-    // connecto to db
-    require '../db/connect.php';
+    require '../db/dbconnect.php';
     
-    // query db
-    $query = mysql_query("
-        SELECT  `belcurvc_inventory`.`inventory`.`description`
-        FROM    `belcurvc_inventory`.`inventory`
-        WHERE   `belcurvc_inventory`.`inventory`.`part_number` = '" . mysql_real_escape_string(trim($_POST['part_number'])) . "'
-    ");
+    // capture POST data
+    $input = trim($_POST['part_number']);
     
-    // return the result if rows returned !== zero
-    echo (mysql_num_rows($query) !== 0) ? mysql_result($query, 0, 'description') : 'P/N not found';
+    // create db query
+    $sql = 'SELECT   inventory.id,
+                     inventory.part_number,
+                     inventory.nsn_alt,
+                     inventory.description,
+                     inventory.cond,
+                     inventory.qty,
+                     inventory.uom
+            FROM     inventory
+            WHERE    inventory.part_number LIKE :part_number
+            ORDER BY inventory.part_number';
+    
+    // prepare the statement for execution
+    $q = $pdo->prepare($sql);
+    
+    // pass value to query and execute it
+    $q->execute([':part_number' => $input.'%']);
+    
+    $q->setFetchMode(PDO::FETCH_ASSOC);
+    
+    echo json_encode($q->fetchAll());
+    
 }

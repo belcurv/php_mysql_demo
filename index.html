@@ -2,13 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Demo Inventor</title>
+    <title>Demo Inventory App</title>
+    
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    
+    <link rel="stylesheet" href="css/style.css">
+    
 </head>
 <body>
     
     <form id="input-form" action="submit">
         <label for="part-number">Part Number: </label>
-        <input type="text" id="part-number">
+        <input type="text" id="part-number" pattern=".{3,}" required
+               title="3 characters minimum">
         <input type="submit" id="part-number-sumbit" value="Fetch">
     </form>
     
