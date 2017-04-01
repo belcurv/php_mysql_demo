@@ -4,15 +4,24 @@
    Need to make sure data exists, is not empty,
    and is greater than 2 UTF8 characters
 */
-if (isset($_POST['part_number']) === true &&
-    empty($_POST['part_number']) === false &&
+
+if (isset($_POST['part_number']) &&
+    !empty($_POST['part_number']) &&
     mb_strlen($_POST['part_number'], 'utf8') > 2) {
-    
+
     require '../db/dbconnect.php';
     
-    // capture POST data
-    $input = trim($_POST['part_number']);
-    
+    // helper function to sanitize POST input
+    function sanitize($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
+    // capture POST data & sanitize
+    $input = sanitize($_POST['part_number']);
+
     // create db query
     $sql = 'SELECT   inventory.id,
                      inventory.part_number,
@@ -22,17 +31,17 @@ if (isset($_POST['part_number']) === true &&
                      inventory.qty,
                      inventory.uom
             FROM     inventory
-            WHERE    inventory.part_number LIKE :part_number
+            WHERE    inventory.part_number LIKE ?
             ORDER BY inventory.part_number';
-    
+
     // prepare the statement for execution
     $q = $pdo->prepare($sql);
-    
-    // pass value to query and execute it
-    $q->execute([':part_number' => $input.'%']);
-    
+    $q->bindValue(1, $input.'%', PDO::PARAM_STR);
+
+    // execute query
+    $q->execute();
+
     $q->setFetchMode(PDO::FETCH_ASSOC);
-    
+
     echo json_encode($q->fetchAll());
-    
 }
