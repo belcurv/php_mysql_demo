@@ -15,6 +15,7 @@
         DOM.$table  = $(document.createElement('table'));
         DOM.$thead  = $(document.createElement('thead'));
         DOM.$tbody  = $(document.createElement('tbody'));
+        DOM.$tr     = $(document.createElement('tr'));
     }
     
     
@@ -50,15 +51,13 @@
         
         var res = JSON.parse(data);
         
-        console.log(res);
-        console.log(typeof res);
-        
         // empty output element first
         DOM.$output.empty();
         
         // if the response is truthy...
         if (res.length) {
             
+            // build table <thead>
             DOM.$thead
                 .html(`<tr>
                         <th>Part Number</th>
@@ -70,30 +69,31 @@
                        <tr>`
                      );
             
+            // empty table <tbody> prior to each rebuild
             DOM.$tbody
                 .empty();
             
+            // build each table <tr> and append to <tbody>
             res.forEach(function (part) {
                 
-                var $tr     = $(document.createElement('tr')),
-                    nsn_alt = (part.nsn_alt === null) ? '' : part.nsn_alt;
-                
-                $tr.html(`<td>${part.part_number}</td>
-                           <td>${nsn_alt}</td>
-                           <td>${part.description}</td>
-                           <td>${part.cond}</td>
-                           <td>${part.qty}</td>
-                           <td>${part.uom}</td>`
-                         )
+                DOM.$tr
+                    .clone()
+                    .html(`<td>${ part.part_number}</td>
+                           <td>${(part.nsn_alt) ? part.nsn_alt : ''}</td>
+                           <td>${ part.description}</td>
+                           <td>${ part.cond}</td>
+                           <td>${+part.qty}</td>
+                           <td>${ part.uom}</td>`
+                        )
                     .appendTo(DOM.$tbody);
             });
             
+            // build <table>
             DOM.$table
                 .addClass('part-number-table')
                 .append(DOM.$thead)
                 .append(DOM.$tbody)
                 .appendTo(DOM.$output);
-            
             
         } else {
             
