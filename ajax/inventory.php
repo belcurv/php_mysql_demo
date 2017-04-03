@@ -23,21 +23,22 @@ if (isset($_POST['part_number']) &&
     $input = sanitize($_POST['part_number']);
 
     // create db query
-    $sql = 'SELECT   inventory.id,
-                     inventory.part_number,
-                     inventory.nsn_alt,
-                     inventory.description,
-                     inventory.cond,
-                     inventory.qty,
-                     inventory.uom
-            FROM     inventory
-            WHERE    inventory.part_number LIKE ?
-            ORDER BY inventory.part_number
-            LIMIT    25';
+    $sql = 'SELECT inventory.id,
+                   inventory.part_number,
+                   inventory.nsn_alt,
+                   inventory.description,
+                   inventory.cond,
+                   inventory.qty,
+                   inventory.uom
+              FROM inventory
+             WHERE inventory.part_number LIKE :pn
+                OR inventory.nsn_alt LIKE :pn
+          ORDER BY inventory.part_number
+             LIMIT 25';
 
     // prepare the statement for execution
     $q = $pdo->prepare($sql);
-    $q->bindValue(1, $input.'%', PDO::PARAM_STR);
+    $q->bindValue(':pn', $input.'%', PDO::PARAM_STR);
 
     // execute query
     $q->execute();
