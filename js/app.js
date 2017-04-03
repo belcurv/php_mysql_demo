@@ -75,10 +75,11 @@
             
             res.forEach(function (part) {
                 
-                var $tr = $(document.createElement('tr'));
+                var $tr     = $(document.createElement('tr')),
+                    nsn_alt = (part.nsn_alt === null) ? '' : part.nsn_alt;
                 
                 $tr.html(`<td>${part.part_number}</td>
-                           <td>${part.nsn_alt}</td>
+                           <td>${nsn_alt}</td>
                            <td>${part.description}</td>
                            <td>${part.cond}</td>
                            <td>${part.qty}</td>
