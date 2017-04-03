@@ -32,7 +32,8 @@ if (isset($_POST['part_number']) &&
                      inventory.uom
             FROM     inventory
             WHERE    inventory.part_number LIKE ?
-            ORDER BY inventory.part_number';
+            ORDER BY inventory.part_number
+            LIMIT    25';
 
     // prepare the statement for execution
     $q = $pdo->prepare($sql);
